@@ -16,18 +16,12 @@ class GamesController {
     public get_one (req: Request, res: Response){
         res.json({text: 'This is game ' + req.params.id});
     }
-    public async create (req: Request, res: Response): Promise<void>{
-        try {
-            await conn.query('INSERT INTO games set ?', [req.body]);
-            console.log(req.body);
-            
-        } catch (e) {
-           console.log(e);
-        }
-        
+    public async create (req: Request, res: Response){ 
+        await conn.query('INSERT INTO games set ?', [req.body]);
+        console.log(req.body);
     }
     public delete (req: Request, res: Response){
-        res.json({ text: 'Daleting game ' + req.params.id});     
+        res.json({ text: 'Deleting game ' + req.params.id});     
     }
     public put (req: Request, res: Response){
         res.json({text: 'actualizando juego.. '+ req.params.id});
