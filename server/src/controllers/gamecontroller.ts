@@ -1,12 +1,17 @@
 import {Request, Response} from 'express';
 import conn from '../database';
-import { json } from 'body-parser';
+
 
 class GamesController {
 
     public async list (req: Request, res: Response) {
-        const games = await conn.query('SELECT * FROM games');
-        res.json(games);
+        try {
+            const games = await conn.query('SELECT * FROM games');
+            res.json(games);
+        } catch (e) {
+            res.send(e);
+        }
+        
     }
     public get_one (req: Request, res: Response){
         res.json({text: 'This is game ' + req.params.id});

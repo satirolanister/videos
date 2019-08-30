@@ -15,8 +15,13 @@ const database_1 = __importDefault(require("../database"));
 class GamesController {
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const games = yield database_1.default.query('SELECT * FROM games');
-            res.json(games);
+            try {
+                const games = yield database_1.default.query('SELECT * FROM games');
+                res.json(games);
+            }
+            catch (e) {
+                res.send(e);
+            }
         });
     }
     get_one(req, res) {
