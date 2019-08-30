@@ -17,8 +17,14 @@ class GamesController {
         res.json({text: 'This is game ' + req.params.id});
     }
     public async create (req: Request, res: Response): Promise<void>{
-        await conn.query('INSERT INTO games set ?', [req.body]);
-        res.json({message: 'Game saved'});
+        try {
+            await conn.query('INSERT INTO games set ?', [req.body]);
+            console.log(req.body);
+            
+        } catch (e) {
+           console.log(e);
+        }
+        
     }
     public delete (req: Request, res: Response){
         res.json({ text: 'Daleting game ' + req.params.id});     

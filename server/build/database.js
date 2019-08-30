@@ -8,12 +8,18 @@ const keys_1 = __importDefault(require("./keys"));
 const conn = (mysql_1.default.createPool(keys_1.default.datebase));
 conn.getConnection((err, connection) => {
     if (err) {
-        throw err;
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.error('Database connection was closed.');
+        }
+        if (err.code === 'ER_CON_COUNT_ERROR') {
+            console.error('Database has too many connections.');
+        }
+        if (err.code === 'ECONNREFUSED') {
+            console.error('Database connection was refused.');
+        }
     }
-    else {
-        conn.releaseConnection(connection);
-        console.log('db conectada');
-        return;
-    }
+    if (connection)
+        connection.release();
+    return;
 });
 exports.default = conn;

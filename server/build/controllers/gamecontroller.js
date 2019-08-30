@@ -29,8 +29,13 @@ class GamesController {
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query('INSERT INTO games set ?', [req.body]);
-            res.json({ message: 'Game saved' });
+            try {
+                yield database_1.default.query('INSERT INTO games set ?', [req.body]);
+                console.log(req.body);
+            }
+            catch (e) {
+                console.log(e);
+            }
         });
     }
     delete(req, res) {
