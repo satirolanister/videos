@@ -1,12 +1,20 @@
 import mysql from 'mysql';
 import keys from './keys';
 
-const pool = mysql.createPool(keys.datebase);
 
-pool.getConnection((err, connection) => {
-    if(err) throw err;
-    connection.release();
-    console.log('DB is COnnected');
+const conn = (mysql.createPool(keys.datebase));
+
+conn.getConnection((err:mysql.MysqlError, connection:mysql.PoolConnection) => {
+    if (err) {
+        throw err
+    }else{
+        conn.releaseConnection(connection);
+        console.log('db conectada');
+        return; 
+    }
+
 });
 
-export default pool;
+
+
+export default conn;

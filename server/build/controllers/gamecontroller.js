@@ -35,7 +35,7 @@ class GamesController {
         res.json({ text: 'actualizando juego.. ' + req.params.id });
     }
 }
-/* instanciar clas creada*/
+/* instanciar class creada*/
 const gamescontroller = new GamesController();
 exports.default = gamescontroller;
 /*

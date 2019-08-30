@@ -5,11 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mysql_1 = __importDefault(require("mysql"));
 const keys_1 = __importDefault(require("./keys"));
-const pool = mysql_1.default.createPool(keys_1.default.datebase);
-pool.getConnection((err, connection) => {
-    if (err)
+const conn = (mysql_1.default.createPool(keys_1.default.datebase));
+conn.getConnection((err, connection) => {
+    if (err) {
         throw err;
-    connection.release();
-    console.log('DB is COnnected');
+    }
+    else {
+        conn.releaseConnection(connection);
+        console.log('db conectada');
+        return;
+    }
 });
-exports.default = pool;
+exports.default = conn;

@@ -1,17 +1,18 @@
 import {Request, Response} from 'express';
-import pool from '../database';
+import conn from '../database';
+import { json } from 'body-parser';
 
 class GamesController {
 
     public async list (req: Request, res: Response) {
-        const games = await pool.query('SELECT * FROM games');
+        const games = await conn.query('SELECT * FROM games');
         res.json(games);
     }
     public get_one (req: Request, res: Response){
         res.json({text: 'This is game ' + req.params.id});
     }
     public async create (req: Request, res: Response): Promise<void>{
-        await pool.query('INSERT INTO games set ?', [req.body]);
+        await conn.query('INSERT INTO games set ?', [req.body]);
         res.json({message: 'Game saved'});
     }
     public delete (req: Request, res: Response){
@@ -22,7 +23,7 @@ class GamesController {
     }
 }
 
-/* instanciar clas creada*/
+/* instanciar class creada*/
 const gamescontroller =new GamesController();
    export default gamescontroller;
 /*
