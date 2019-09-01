@@ -7,37 +7,58 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
 class GamesController {
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const games = yield database_1.default.query('SELECT * FROM games');
-                res.json(games);
-            }
-            catch (e) {
-                res.send(e);
-            }
+            const conn = yield database_1.connect();
+            const games = yield conn.query('select * from games');
+            return res.json(games[0]);
         });
     }
     get_one(req, res) {
-        res.json({ text: 'This is game ' + req.params.id });
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const conn = yield database_1.connect();
+            const game = yield conn.query('select * from games where id=?', [id]);
+            if (game.length > 0) {
+                return res.json(game[0]);
+            }
+            else {
+                return res.status(404).json({
+                    message: 'Games not found'
+                });
+            }
+        });
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query('INSERT INTO games set ?', [req.body]);
-            console.log(req.body);
+            const newGame = req.body;
+            const conn = yield database_1.connect();
+            yield conn.query('insert into games set ?', [newGame]);
+            res.json({
+                message: 'Game created'
+            });
         });
     }
     delete(req, res) {
-        res.json({ text: 'Deleting game ' + req.params.id });
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const conn = yield database_1.connect();
+            yield conn.query('delete from games where id=?', [id]);
+            res.json({
+                message: 'Game deleted'
+            });
+        });
     }
     put(req, res) {
-        res.json({ text: 'actualizando juego.. ' + req.params.id });
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const conn = yield database_1.connect();
+            const game = req.body;
+            yield conn.query('update games set ? where id=?', [game, id]);
+        });
     }
 }
 /* instanciar class creada*/

@@ -1,30 +1,47 @@
 import {Request, Response} from 'express';
-import conn from '../database';
-
+import {connect} from '../database';
 
 class GamesController {
 
-    public async list (req: Request, res: Response) {
-        try {
-            const games = await conn.query('SELECT * FROM games');
-            res.json(games);
-        } catch (e) {
-            res.send(e);
+    public async list (req: Request, res: Response):Promise<Response> {
+        const conn = await connect();
+        const games = await conn.query('select * from games');
+        return res.json(games[0]);
+    }
+    public async get_one (req: Request, res: Response):Promise<Response>{
+        const {id} = req.params;
+        const conn = await connect();
+        const game = await conn.query('select * from games where id=?',[id]);
+        if (game.length > 0) {
+            return res.json(game[0]);
+        }else{
+            return res.status(404).json({
+                message: 'Games not found'
+            })
         }
         
     }
-    public get_one (req: Request, res: Response){
-        res.json({text: 'This is game ' + req.params.id});
+    public async create (req: Request, res: Response):Promise<void>{ 
+        const newGame=req.body;
+        const conn = await connect();
+        await conn.query('insert into games set ?', [newGame]);
+        res.json({
+            message: 'Game created'
+        }); 
     }
-    public async create (req: Request, res: Response){ 
-        await conn.query('INSERT INTO games set ?', [req.body]);
-        console.log(req.body);
+    public async delete (req: Request, res: Response):Promise<void>{
+        const {id} = req.params;
+        const conn = await connect();
+        await conn.query('delete from games where id=?',[id]);
+        res.json({
+            message:'Game deleted'
+        });   
     }
-    public delete (req: Request, res: Response){
-        res.json({ text: 'Deleting game ' + req.params.id});     
-    }
-    public put (req: Request, res: Response){
-        res.json({text: 'actualizando juego.. '+ req.params.id});
+    public async put (req: Request, res: Response){
+        const {id}=req.params;
+        const game = req.body;
+        const conn = await connect();
+        await conn.query('update games set ? where id=?',[game, id]);
     }
 }
 
